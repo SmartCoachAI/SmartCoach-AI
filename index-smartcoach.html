@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SmartCoach AI</title>
+<meta name="description" content="Coaching personalizado a escala para gimnasios: entrenamiento, nutrición y recuperación con IA."/>
+<meta name="theme-color" content="#0b1324"/>
+<style>
+  :root{
+    --bg:#0b1324;
+    --bg-2:#0d1730;
+    --ink:#f7f9ff;
+    --muted:#b8c1d9;
+    --line:rgba(255,255,255,.12);
+    --card:rgba(255,255,255,.05);
+    --brand:#f5c518;
+    --brand-ink:#0b1324;
+    --navy:#0e2445;
+    --radius:18px;
+    --shadow:0 10px 30px rgba(0,0,0,.25);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family: system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial,sans-serif;}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  .container{max-width:1160px;margin:0 auto;padding:0 20px}
+  .btn{display:inline-block;padding:12px 18px;border-radius:999px;font-weight:700;border:1px solid var(--line)}
+  .btn-brand{background:var(--brand);color:var(--brand-ink);border:none}
+  .btn-ghost{background:transparent}
+  .btn:hover{filter:brightness(1.05)}
+  /* Header */
+  header{
+    position:sticky;top:0;z-index:60;
+    backdrop-filter:saturate(130%) blur(10px);
+    background:rgba(11,19,36,.72);
+    border-bottom:1px solid var(--line)
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:800}
+  .brand img{height:40px;width:auto}
+  nav a{margin:0 10px;font-size:14px;opacity:.95}
+  nav a:hover{color:var(--brand)}
+  .menu-toggle{display:none;background:transparent;border:1px solid var(--line);border-radius:10px;padding:8px}
+  @media (max-width:900px){
+    nav{display:none}
+    .menu-toggle{display:inline-flex}
+    .mobile{display:none;position:absolute;top:58px;left:0;right:0;background:rgba(13,23,48,.98);border-bottom:1px solid var(--line)}
+    .mobile a{display:block;padding:14px 20px;border-top:1px solid var(--line)}
+    .mobile.open{display:block}
+  }
+  /* Hero */
+  .hero{position:relative;overflow:hidden}
+  .glow{position:absolute;left:50%;top:-180px;transform:translateX(-50%);
+    width:680px;height:680px;border-radius:50%;filter:blur(110px);
+    background:radial-gradient(ellipse at center, rgba(245,197,24,.33), transparent 60%);
+    pointer-events:none}
+  .grid{display:grid;gap:28px}
+  @media(min-width:980px){ .grid-2{grid-template-columns:1.15fr 1fr}}
+  h1{font-size:42px;line-height:1.12;margin:0;letter-spacing:.2px}
+  @media(min-width:760px){ h1{font-size:54px}}
+  p.lead{color:#e8edf7;opacity:.92;font-size:18px}
+  /* Sections & cards */
+  .section{padding:84px 0}
+  .section.alt{background:var(--bg-2)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+  .muted{color:var(--muted)}
+  .sep{height:1px;background:var(--line);margin:16px 0}
+  .kpis{display:grid;gap:14px}
+  @media(min-width:740px){ .kpis{grid-template-columns:repeat(3,1fr)}}
+  .kpi .label{color:#cbd3e3;font-size:13px}
+  .kpi .value{font-size:22px;font-weight:800;color:var(--brand)}
+  /* Features */
+  .features{display:grid;gap:16px}
+  @media(min-width:860px){ .features{grid-template-columns:repeat(3,1fr)}}
+  .feat-head{display:flex;gap:10px;align-items:center}
+  .pill{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:rgba(245,197,24,.15);color:var(--brand);font-size:18px}
+  /* Timeline */
+  .timeline{display:grid;gap:16px}
+  @media(min-width:900px){ .timeline{grid-template-columns:repeat(3,1fr)}}
+  .step-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--brand);color:var(--brand-ink);font-weight:800}
+  /* Pricing */
+  .pricing{display:grid;gap:16px}
+  @media(min-width:980px){ .pricing{grid-template-columns:repeat(2,1fr)}}
+  .badge{position:absolute;top:-10px;left:18px;background:var(--brand);color:var(--brand-ink);padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800}
+  /* Footer */
+  footer{border-top:1px solid var(--line);padding:40px 0}
+  /* Utilities */
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  input,textarea{
+    width:100%;padding:12px 14px;border-radius:14px;background:transparent;
+    border:1px solid var(--line);color:var(--ink);outline:none
+  }
+  input:focus,textarea:focus{border-color:#e1e6f7;box-shadow:0 0 0 3px rgba(245,197,24,.12)}
+  .grid-4{display:grid;gap:12px;grid-template-columns:repeat(2,1fr)}
+  @media(min-width:720px){ .grid-4{grid-template-columns:repeat(4,1fr)}}
+  html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <a href="#home" class="brand">
+      <img src="smartcoach-logo.png" alt="SmartCoach AI logo">
+      <span class="logo-txt" style="font-weight:800;font-size:18px;letter-spacing:.2px">SmartCoach AI</span>
+    </a>
+    <nav aria-label="principal">
+      <a href="#features">Características</a>
+      <a href="#how">Cómo funciona</a>
+      <a href="#pricing">Precios</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#contact">Contacto</a>
+      <a href="#demo" class="btn btn-brand" style="margin-left:8px">Solicitar demo</a>
+    </nav>
+    <button class="menu-toggle" aria-label="Abrir menú" onclick="document.querySelector('.mobile').classList.toggle('open')">☰</button>
+    <div class="mobile" role="menu">
+      <a href="#features" onclick="this.parentElement.classList.remove('open')">Características</a>
+      <a href="#how" onclick="this.parentElement.classList.remove('open')">Cómo funciona</a>
+      <a href="#pricing" onclick="this.parentElement.classList.remove('open')">Precios</a>
+      <a href="#dashboard" onclick="this.parentElement.classList.remove('open')">Dashboard</a>
+      <a href="#contact" onclick="this.parentElement.classList.remove('open')">Contacto</a>
+      <a href="#demo" class="btn btn-brand" style="margin:12px" onclick="this.parentElement.classList.remove('open')">Solicitar demo</a>
+    </div>
+  </div>
+</header>
+
+<main id="home" class="hero">
+  <div class="glow" aria-hidden="true"></div>
+  <section class="section">
+    <div class="container grid grid-2">
+      <div>
+        <h1>Coaching personalizado a escala para <span style="color:var(--brand)">gimnasios</span></h1>
+        <p class="lead" style="margin-top:16px">
+          SmartCoach AI adapta entrenamiento, nutrición y recuperación <strong>día a día</strong> usando feedback y datos de wearables.
+          Aumentá la retención, liberá tiempo de tu staff y ofrecé una experiencia premium.
+        </p>
+        <div class="row" style="margin-top:18px">
+          <a class="btn btn-brand" href="#demo">Solicitar demo</a>
+          <a class="btn btn-ghost" href="#features">Ver características</a>
+        </div>
+        <p class="muted" style="margin-top:10px;font-size:12px">Integraciones: Apple Watch · Garmin · Fitbit · Google Fit</p>
+      </div>
+      <div class="card">
+        <div class="row" style="align-items:center;justify-content:space-between">
+          <div class="row" style="align-items:center;gap:10px">
+            <img src="smartcoach-logo.png" alt="SmartCoach AI" style="height:28px;width:auto"/>
+            <div>
+              <div class="muted" style="font-size:12px">Panel</div>
+              <strong>SmartCoach <span style="color:var(--brand)">AI</span></strong>
+            </div>
+          </div>
+          <div class="card" style="padding:6px 10px;border-radius:10px;font-size:12px">Sede: Palermo</div>
+        </div>
+        <div class="grid" style="margin-top:14px;grid-template-columns:repeat(2,1fr);gap:12px">
+          <div class="card kpi">
+            <div class="label">Retención 90d</div>
+            <div class="value">+12%</div>
+            <div class="muted" style="font-size:12px">vs. mes anterior</div>
+          </div>
+          <div class="card kpi">
+            <div class="label">Usuarios activos</div>
+            <div class="value">862</div>
+            <div class="muted" style="font-size:12px">7 días</div>
+          </div>
+        </div>
+        <div class="kpis" style="margin-top:12px">
+          <div class="card kpi"><div class="label">Ahorro de tiempo del staff</div><div class="value">6.5h</div></div>
+          <div class="card kpi"><div class="label">Alertas de abandono</div><div class="value">23</div></div>
+          <div class="card kpi"><div class="label">Satisfacción (NPS)</div><div class="value">+52</div></div>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <div class="muted" style="font-size:13px">Actividad semanal</div>
+          <div class="grid" style="margin-top:10px;grid-template-columns:repeat(7,1fr);gap:8px">
+            <div class="card" style="height:56px"></div><div class="card" style="height:56px"></div><div class="card" style="height:56px"></div>
+            <div class="card" style="height:56px"></div><div class="card" style="height:56px"></div><div class="card" style="height:56px"></div>
+            <div class="card" style="height:56px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="section alt">
+    <div class="container">
+      <h2 style="margin:0">Lo que incluye</h2>
+      <p class="muted" style="margin-top:6px">Personalización en tres pilares y paneles para tu equipo, sin contratar más staff.</p>
+      <div class="features" style="margin-top:18px">
+        <div class="card">
+          <div class="feat-head"><span class="pill" aria-hidden="true">🏋️</span><strong>Entrenamiento adaptable</strong></div>
+          <p class="muted" style="margin-top:8px">Rutinas que se ajustan a progreso, objetivos y energía diaria.</p>
+        </div>
+        <div class="card">
+          <div class="feat-head"><span class="pill" aria-hidden="true">🍎</span><strong>Nutrición práctica</strong></div>
+          <p class="muted" style="margin-top:8px">Sugerencias simples alineadas a calorías y macros del usuario.</p>
+        </div>
+        <div class="card">
+          <div class="feat-head"><span class="pill" aria-hidden="true">🌙</span><strong>Recuperación inteligente</strong></div>
+          <p class="muted" style="margin-top:8px">Indicaciones de sueño, movilidad y descanso para evitar sobrecargas.</p>
+        </div>
+      </div>
+      <div class="features" style="margin-top:12px">
+        <div class="card">
+          <div class="feat-head"><span class="pill" aria-hidden="true">⚡</span><strong>IA + wearables</strong></div>
+          <p class="muted" style="margin-top:8px">Integra Apple Watch, Garmin, Fitbit, etc. para ajustar intensidad automáticamente.</p>
+        </div>
+        <div class="card">
+          <div class="feat-head"><span class="pill" aria-hidden="true">📊</span><strong>Dashboard de gestión</strong></div>
+          <p class="muted" style="margin-top:8px">Retención, usuarios activos/inactivos, alertas y predicción de abandono.</p>
+        </div>
+        <div class="card">
+          <div class="feat-head"><span class="pill" aria-hidden="true">🛡️</span><strong>Seguridad y control</strong></div>
+          <p class="muted" style="margin-top:8px">Perfiles personalizados, override de entrenadores y privacidad cuidada.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="section">
+    <div class="container">
+      <h2 style="margin:0">Cómo funciona</h2>
+      <div class="timeline" style="margin-top:16px">
+        <div class="card"><div class="row" style="align-items:center;gap:10px"><span class="step-num">1</span><strong>Contrato & setup</strong></div><p class="muted" style="margin-top:8px">Configuramos tu branding y base de miembros.</p></div>
+        <div class="card"><div class="row" style="align-items:center;gap:10px"><span class="step-num">2</span><strong>Onboarding</strong></div><p class="muted" style="margin-top:8px">Miembros completan objetivos, lesiones y conectan wearables.</p></div>
+        <div class="card"><div class="row" style="align-items:center;gap:10px"><span class="step-num">3</span><strong>Primera rutina</strong></div><p class="muted" style="margin-top:8px">Plan con videos, series y recordatorios.</p></div>
+        <div class="card"><div class="row" style="align-items:center;gap:10px"><span class="step-num">4</span><strong>Feedback</strong></div><p class="muted" style="margin-top:8px">El usuario marca fácil/normal/difícil/dolor tras entrenar.</p></div>
+        <div class="card"><div class="row" style="align-items:center;gap:10px"><span class="step-num">5</span><strong>Adaptación diaria</strong></div><p class="muted" style="margin-top:8px">La rutina del día siguiente se actualiza automáticamente.</p></div>
+        <div class="card"><div class="row" style="align-items:center;gap:10px"><span class="step-num">6</span><strong>Gestión & reportes</strong></div><p class="muted" style="margin-top:8px">Trainers y managers ven métricas, retención y alertas.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="section alt">
+    <div class="container grid grid-2" style="align-items:center">
+      <div>
+        <h2 style="margin:0">Panel para entrenadores y managers</h2>
+        <ul class="muted" style="margin-top:10px;line-height:1.7">
+          <li>Usuarios activos e inactivos, alertas por abandono inminente.</li>
+          <li>Retención, asistencia y ahorro de tiempo de staff.</li>
+          <li>Comparativas por sede y por plan (Básico vs. Premium).</li>
+          <li>Override seguro para casos de rehabilitación o lesiones.</li>
+        </ul>
+        <div style="margin-top:14px">
+          <a href="#demo" class="btn btn-brand">Quiero ver el demo</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="grid" style="grid-template-columns:repeat(2,1fr);gap:12px">
+          <div class="card kpi"><div class="label">Retención 90d</div><div class="value">+12%</div></div>
+          <div class="card kpi"><div class="label">Usuarios activos</div><div class="value">862</div></div>
+          <div class="card kpi"><div class="label">Alertas</div><div class="value">23</div></div>
+          <div class="card kpi"><div class="label">NPS</div><div class="value">+52</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing" class="section">
+    <div class="container">
+      <h2 style="margin:0">Planes y precios</h2>
+      <p class="muted" style="margin-top:6px">Dos licencias pensadas para tu tamaño y ambición.</p>
+      <div class="pricing" style="margin-top:18px">
+        <div class="card" style="position:relative">
+          <h3 style="margin:6px 0 0 0">Básico</h3>
+          <div class="sep"></div>
+          <div><span style="color:var(--brand);font-size:26px;font-weight:800">ARS 90.000–220.000</span> <span class="muted">/mes según tamaño</span></div>
+          <ul class="muted" style="margin-top:10px;line-height:1.7">
+            <li>Entrenamiento con IA (rutinas diarias)</li>
+            <li>App móvil y kiosco</li>
+            <li>Dashboard básico (uso, asistencia, retención)</li>
+            <li>Soporte estándar</li>
+          </ul>
+          <a class="btn btn-ghost" style="margin-top:10px" href="#demo">Empezar</a>
+        </div>
+        <div class="card" style="position:relative;border-color:rgba(245,197,24,.5)">
+          <span class="badge">Más popular</span>
+          <h3 style="margin:6px 0 0 0">Premium</h3>
+          <div class="sep"></div>
+          <div><span style="color:var(--brand);font-size:26px;font-weight:800">ARS 160.000–360.000</span> <span class="muted">/mes según tamaño</span></div>
+          <ul class="muted" style="margin-top:10px;line-height:1.7">
+            <li>Todo lo del Básico</li>
+            <li>Integración con wearables</li>
+            <li>Nutrición y recuperación</li>
+            <li>Analytics avanzado (churn prediction)</li>
+            <li>Soporte prioritario + training al staff</li>
+          </ul>
+          <a class="btn btn-brand" style="margin-top:10px" href="#demo">Empezar</a>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:8px;font-size:12px">*Los rangos se adaptan a &lt;500, 501–1.000 y 1.001+ miembros.</p>
+    </div>
+  </section>
+
+  <!-- SOCIAL PROOF -->
+  <section class="section alt">
+    <div class="container">
+      <p class="muted" style="text-align:center">Validado con gimnasios y centros de rehabilitación. Enfocado en retención y seguridad.</p>
+      <div class="grid-4" style="margin-top:14px">
+        <div class="card" style="text-align:center;padding:22px">WALD Gym</div>
+        <div class="card" style="text-align:center;padding:22px">Marathon Junín</div>
+        <div class="card" style="text-align:center;padding:22px">SportClub</div>
+        <div class="card" style="text-align:center;padding:22px">FitPalermo</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section">
+    <div class="container" style="text-align:center;max-width:760px">
+      <h2 style="margin:0">¿Listos para un gimnasio potenciado por IA?</h2>
+      <p class="muted" style="margin-top:6px">Agendá una demo y recibí un onboarding kit con branding, KPIs de retención y plan de lanzamiento.</p>
+
+      <form id="demo" class="grid" style="margin-top:16px;gap:12px">
+        <div class="grid" style="grid-template-columns:1fr 1fr;gap:12px">
+          <input id="f-name" placeholder="Nombre y gimnasio" required />
+          <input id="f-email" type="email" placeholder="Email" required />
+        </div>
+        <input id="f-phone" placeholder="Teléfono (opcional)" />
+        <textarea id="f-msg" rows="4" placeholder="Contanos brevemente tu caso"></textarea>
+        <button type="submit" class="btn btn-brand">Enviar solicitud</button>
+      </form>
+      <p class="muted" style="margin-top:8px;font-size:12px">Al enviar, aceptás los Términos de Servicio y la Política de Privacidad.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+    <div class="row" style="align-items:center;gap:10px">
+      <img src="smartcoach-logo.png" alt="SmartCoach AI" style="height:24px;width:auto">
+      <span class="muted" style="font-size:14px">© <span id="year"></span> SmartCoach AI. Todos los derechos reservados.</span>
+    </div>
+    <div class="row muted" style="font-size:14px">
+      <a href="#">Términos</a>
+      <a href="#">Privacidad</a>
+      <a href="#">Soporte</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Año dinámico
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Envío simple por mailto
+  document.getElementById('demo').addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = encodeURIComponent(document.getElementById('f-name').value.trim());
+    var email = encodeURIComponent(document.getElementById('f-email').value.trim());
+    var phone = encodeURIComponent(document.getElementById('f-phone').value.trim());
+    var msg = encodeURIComponent(document.getElementById('f-msg').value.trim());
+    var body =
+      "Nombre y gimnasio: " + name + "%0D%0A" +
+      "Email: " + email + "%0D%0A" +
+      "Teléfono: " + phone + "%0D%0A" +
+      "Caso: " + msg;
+    window.location.href = "mailto:hello@smartcoach.ai?subject=Demo%20SmartCoach%20AI&body=" + body;
+  });
+</script>
+
+</body>
+</html>
